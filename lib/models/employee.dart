@@ -4,6 +4,7 @@ class Employee {
   final Role role;
   final DateTime fromDate;
   final DateTime? toDate;
+   bool deleted;
 
   Employee({
     this.id,
@@ -11,6 +12,7 @@ class Employee {
     required this.role,
     required this.fromDate,
      this.toDate,
+    this.deleted = false,
   });
   Map<String, dynamic> toMap() {
     return {
@@ -19,17 +21,21 @@ class Employee {
       'role': role.value,
       'fromDate': fromDate.toIso8601String(),
       'toDate': toDate?.toIso8601String(),
+      'deleted': deleted ? 1 : 0, // Store 1 for true and 0 for false
     };
   }
+
   factory Employee.fromMap(Map<String, dynamic> map) {
     return Employee(
       id: map['id'],
       name: map['name'],
-      role:roles.firstWhere((role) => role.toString() == map['role']),
+      role: roles.firstWhere((role) => role.toString() == map['role']),
       fromDate: DateTime.parse(map['fromDate']),
       toDate: map['toDate'] != null ? DateTime.parse(map['toDate']) : null,
+      deleted: map['deleted'] == 1, // Convert 1 to true and 0 to false
     );
   }
+
 }
 
 

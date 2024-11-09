@@ -3,10 +3,9 @@ import 'package:path/path.dart';
 
 import '../models/employee.dart';
 
-
 class DatabaseHelper {
   static const _databaseName = 'employee_database.db';
-  static const _databaseVersion = 1;
+  static const _databaseVersion = 2;
   static const _tableName = 'employees';
 
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -42,7 +41,8 @@ class DatabaseHelper {
         name TEXT,
         role TEXT,
         fromDate TEXT,
-        toDate TEXT
+        toDate TEXT,
+        deleted INTEGER DEFAULT 0
       )
     ''');
   }
@@ -58,7 +58,8 @@ class DatabaseHelper {
 
   Future<List<Employee>> getEmployees() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(_tableName);
+    final List<Map<String, dynamic>> maps =
+        await db.query(_tableName, where: 'deleted = ?', whereArgs: [0]);
 
     return List.generate(maps.length, (i) {
       return Employee(
@@ -66,7 +67,10 @@ class DatabaseHelper {
         name: maps[i]['name'],
         role: roles.firstWhere((role) => role.value == maps[i]['role']),
         fromDate: DateTime.parse(maps[i]['fromDate']),
-        toDate:maps[i]['toDate'] != null ? DateTime.parse(maps[i]['toDate']) : null ,
+        toDate: maps[i]['toDate'] != null
+            ? DateTime.parse(maps[i]['toDate'])
+            : null,
+        deleted: maps[i]['deleted'] == 1,
       );
     });
   }
@@ -79,6 +83,39 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [employee.id],
     );
+  }
+
+  Future<Employee?> getEmployeeById(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      _tableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return Employee(
+        id: maps[0]['id'],
+        name: maps[0]['name'],
+        role: roles.firstWhere((role) => role.value == maps[0]['role']),
+        fromDate: DateTime.parse(maps[0]['fromDate']),
+        toDate: maps[0]['toDate'] != null
+            ? DateTime.parse(maps[0]['toDate'])
+            : null,
+        deleted: maps[0]['deleted'] == 1, // Mark if the employee is deleted
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> toggleEmployeeDelete(int id) async {
+    final employee = await getEmployeeById(id);
+    if (employee != null) {
+      employee.deleted = !employee.deleted;
+      await updateEmployee(employee);
+      getEmployees();
+    }
   }
 
   Future<int> deleteEmployee(int id) async {

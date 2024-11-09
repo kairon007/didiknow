@@ -6,25 +6,20 @@ import '../widgets/employeelist.dart';
 
 class EmployeeScreen extends StatefulWidget {
   const EmployeeScreen({super.key});
+
   @override
   _EmployeeScreenState createState() => _EmployeeScreenState();
 }
 
-class _EmployeeScreenState extends State<EmployeeScreen>
-{
-  late final EmployeeCubit _employeeCubit;
-
+class _EmployeeScreenState extends State<EmployeeScreen> {
   @override
   void initState() {
     super.initState();
-    _employeeCubit = EmployeeCubit();
-    _employeeCubit.getEmployees();
+    context.read<EmployeeCubit>().getEmployees();
   }
-
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -33,29 +28,18 @@ class _EmployeeScreenState extends State<EmployeeScreen>
         ),
         backgroundColor: Colors.blue,
       ),
-      body:BlocProvider(
-        create: (context) => _employeeCubit,
-        child: const EmployeeList(),
-      ),
+      body: const EmployeeList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) => _employeeCubit,
-                child: const AddEmployeeScreen(),
-              ),
+              builder: (context) => const AddEmployeeScreen(),
             ),
           );
-
         },
-        child: const Icon(Icons.add,color: Colors.blue),
+        child: const Icon(Icons.add, color: Colors.blue),
       ),
     );
   }
 }
-
-
-
-

@@ -27,6 +27,15 @@ class EmployeeCubit extends Cubit<CubitState> {
     }
   }
 
+  Future<void> toggleEmployeeDelete(int id) async {
+    try {
+      await _databaseHelper.toggleEmployeeDelete(id);
+      getEmployees();
+    } catch (e) {
+      emit(EmployeeError(e.toString(), EmployeeState.error));
+    }
+  }
+
   Future<void> getEmployees() async {
     emit(EmployeeLoading());
     try {
@@ -34,12 +43,10 @@ class EmployeeCubit extends Cubit<CubitState> {
       if (employees.isEmpty) {
         emit(EmployeeEmpty());
       } else {
-
         List<Employee> currentEmployees =
             employees.where((e) => e.toDate == null).toList();
         List<Employee> exEmployees =
             employees.where((e) => e.toDate != null).toList();
-
 
         emit(EmployeeLoadedState(
             currentEmployees, exEmployees, EmployeeState.loaded));
