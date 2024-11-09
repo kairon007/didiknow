@@ -17,6 +17,14 @@ class EmployeeCubit extends Cubit<CubitState> {
       emit(EmployeeError(e.toString(), EmployeeState.error));
     }
   }
+  Future<void> updateEmployee(Employee employee) async {
+    try {
+      await _databaseHelper.updateEmployee(employee);
+      getEmployees();
+    } catch (e) {
+      emit(EmployeeError(e.toString(), EmployeeState.error));
+    }
+  }
 
   Future<void> deleteEmployee(int id) async {
     try {

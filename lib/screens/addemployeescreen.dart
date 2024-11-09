@@ -12,7 +12,9 @@ import '../cubit/employeecubit.dart';
 enum Calendar { day, week, month, year }
 
 class AddEmployeeScreen extends StatefulWidget {
-  const AddEmployeeScreen({super.key});
+  final Employee? employee;
+
+  const AddEmployeeScreen({Key? key, this.employee}) : super(key: key);
 
   @override
   _AddEmployeeScreenState createState() => _AddEmployeeScreenState();
@@ -20,15 +22,23 @@ class AddEmployeeScreen extends StatefulWidget {
 
 class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final _nameController = TextEditingController();
-  final _roleController = TextEditingController();
-
   DateTime fromDate = DateTime.now();
   DateTime? toDate;
   Role? selectedRole;
-  int selectedIndex = 0;
-  final int _value = 1;
+  bool editEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.employee != null) {
+      editEnabled = true;
+      _nameController.text = widget.employee!.name;
+      selectedRole = widget.employee!.role;
+      fromDate = widget.employee!.fromDate;
+      toDate = widget.employee!.toDate;
+    }
+  }
 
   void showCustomDatePicker(bool from) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -43,10 +53,9 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
           contentPadding: EdgeInsets.zero,
           content: SizedBox(
             width: screenWidth * 0.95,
-            height: screenHeight * 0.7, // Set a fixed height
+            height: screenHeight * 0.7,
             child: CalendarPage(
               onSave: (selectedDate) {
-                // Do something with the selected date, like saving it
                 Navigator.pop(context);
                 setState(() {
                   if (from) {
@@ -73,15 +82,23 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   void _saveForm() {
     if (_formKey.currentState!.validate() && selectedRole != null) {
       final employee = Employee(
+        id: widget.employee?.id ?? 0,
         name: _nameController.text,
         role: selectedRole!,
         fromDate: fromDate,
         toDate: toDate,
       );
-      context.read<EmployeeCubit>().addEmployee(employee);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Employee details saved!')),
-      );
+      if (widget.employee != null) {
+        context.read<EmployeeCubit>().updateEmployee(employee);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Employee details updated!')),
+        );
+      } else {
+        context.read<EmployeeCubit>().addEmployee(employee);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Employee details saved!')),
+        );
+      }
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -94,8 +111,8 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Add Employee Details',
+        title: Text(
+          editEnabled ? 'Edit Employee Details' : 'Add Employee Details',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.blue,

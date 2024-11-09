@@ -6,6 +6,7 @@ import 'package:realtime/cubit/employeestate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:realtime/utils/constants.dart';
 import 'package:realtime/widgets/employeecard.dart';
+import 'package:realtime/screens/addemployeescreen.dart';
 
 class EmployeeList extends StatelessWidget {
   const EmployeeList({super.key});
@@ -86,7 +87,18 @@ class EmployeeList extends StatelessWidget {
               )),
         );
       },
-      child: EmployeeCard(employee: employee),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddEmployeeScreen(
+                  employee: employee), // Pass the employee for editing
+            ),
+          );
+        },
+        child: EmployeeCard(employee: employee),
+      ),
     );
   }
 }
