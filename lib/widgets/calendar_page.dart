@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 class CalendarPage extends StatefulWidget {
   final void Function(DateTime) onSave;
   final VoidCallback onCancel;
+
   const CalendarPage({
     super.key,
     required this.onSave,
@@ -18,7 +19,15 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime selectedDate = DateTime.now();
   DateTime displayedMonth = DateTime.now();
 
-  final List<String> weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  final List<String> weekDays = [
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +59,8 @@ class _CalendarPageState extends State<CalendarPage> {
         _dateButton('Today', DateTime.now()),
         _dateButton('Next Monday', _getNextMonday()),
         _dateButton('Next Tuesday', _getNextTuesday()),
-        _dateButton('After 1 week', DateTime.now().add(const Duration(days: 7))),
+        _dateButton(
+            'After 1 week', DateTime.now().add(const Duration(days: 7))),
       ],
     );
   }
@@ -59,9 +69,9 @@ class _CalendarPageState extends State<CalendarPage> {
     bool isSelected = DateUtils.isSameDay(selectedDate, date);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: isSelected ? Colors.blue : Colors.blue.withOpacity(0.1),
+        backgroundColor: isSelected ? Colors.blue : Colors.white,
         foregroundColor: isSelected ? Colors.white : Colors.blue,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
       onPressed: () => setState(() => selectedDate = date),
       child: Text(text),
@@ -75,7 +85,8 @@ class _CalendarPageState extends State<CalendarPage> {
         IconButton(
           icon: const Icon(Icons.chevron_left),
           onPressed: () => setState(() {
-            displayedMonth = DateTime(displayedMonth.year, displayedMonth.month - 1);
+            displayedMonth =
+                DateTime(displayedMonth.year, displayedMonth.month - 1);
           }),
         ),
         Text(
@@ -85,7 +96,8 @@ class _CalendarPageState extends State<CalendarPage> {
         IconButton(
           icon: const Icon(Icons.chevron_right),
           onPressed: () => setState(() {
-            displayedMonth = DateTime(displayedMonth.year, displayedMonth.month + 1);
+            displayedMonth =
+                DateTime(displayedMonth.year, displayedMonth.month + 1);
           }),
         ),
       ],
@@ -152,7 +164,9 @@ class _CalendarPageState extends State<CalendarPage> {
         Row(
           children: [
             TextButton(
-              onPressed: () { widget.onCancel();},
+              onPressed: () {
+                widget.onCancel();
+              },
               child: const Text('Cancel'),
             ),
             const SizedBox(width: 8),
@@ -169,14 +183,17 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   int _getDaysInMonth() {
-    final firstDayOfMonth = DateTime(displayedMonth.year, displayedMonth.month, 1);
-    final daysInMonth = DateTime(displayedMonth.year, displayedMonth.month + 1, 0).day;
+    final firstDayOfMonth =
+        DateTime(displayedMonth.year, displayedMonth.month, 1);
+    final daysInMonth =
+        DateTime(displayedMonth.year, displayedMonth.month + 1, 0).day;
     final firstWeekdayOfMonth = firstDayOfMonth.weekday % 7;
     return 42; // 6 rows * 7 days
   }
 
   DateTime _getDateForIndex(int index) {
-    final firstDayOfMonth = DateTime(displayedMonth.year, displayedMonth.month, 1);
+    final firstDayOfMonth =
+        DateTime(displayedMonth.year, displayedMonth.month, 1);
     final firstWeekdayOfMonth = firstDayOfMonth.weekday % 7;
     final day = index - firstWeekdayOfMonth + 1;
     return DateTime(displayedMonth.year, displayedMonth.month, day);

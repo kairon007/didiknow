@@ -50,7 +50,7 @@ class _EmployeeScreenState extends State<EmployeeScreen>
           );
 
         },
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add,color: Colors.blue),
       ),
     );
   }

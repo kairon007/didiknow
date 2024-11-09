@@ -26,7 +26,7 @@ class CustomDropdown extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: items.map((item) {
             return ListTile(
-              title: Text(item),
+              title: Center(child: Text(item),),
               onTap: () {
                 onChanged?.call(item);
                 Navigator.pop(context);

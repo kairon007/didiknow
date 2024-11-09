@@ -21,8 +21,6 @@ class AddEmployeeScreen extends StatefulWidget {
 class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   final _formKey = GlobalKey<FormState>();
 
-
-
   final _nameController = TextEditingController();
   final _roleController = TextEditingController();
 
@@ -31,8 +29,6 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   Role? selectedRole;
   int selectedIndex = 0;
   final int _value = 1;
-
-
 
   void showCustomDatePicker(bool from) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -74,9 +70,8 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
     );
   }
 
-
   void _saveForm() {
-    if (_formKey.currentState!.validate() && selectedRole!=null ) {
+    if (_formKey.currentState!.validate() && selectedRole != null) {
       final employee = Employee(
         name: _nameController.text,
         role: selectedRole!,
@@ -88,7 +83,7 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
         const SnackBar(content: Text('Employee details saved!')),
       );
       Navigator.pop(context);
-    }else{
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please provide relevant info!')),
       );
@@ -134,7 +129,8 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
                     icon: Icons.work,
                     onChanged: (String? value) {
                       setState(() {
-                        selectedRole = roles.firstWhere((role) => role.name == value);
+                        selectedRole =
+                            roles.firstWhere((role) => role.name == value);
                       });
                     },
                     validator: (value) {
