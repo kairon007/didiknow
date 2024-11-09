@@ -33,11 +33,15 @@ class EmployeeList extends StatelessWidget {
           case EmployeeLoadedState():
             return ListView(
               children: [
-                _buildSectionHeader('Current Employees'),
+                state.currentEmployees.isNotEmpty
+                    ? _buildSectionHeader('Current Employees')
+                    : SizedBox(),
                 ...state.currentEmployees
                     .map((e) => _buildListItem(e, context))
                     .toList(),
-                _buildSectionHeader('Previous Employees'),
+                state.exEmployees.isNotEmpty
+                    ? _buildSectionHeader('Previous Employees')
+                    : SizedBox(),
                 ...state.exEmployees
                     .map((e) => _buildListItem(e, context))
                     .toList(),

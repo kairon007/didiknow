@@ -82,7 +82,7 @@ class _AddEmployeeScreenState extends State<AddEmployeeScreen> {
   void _saveForm() {
     if (_formKey.currentState!.validate() && selectedRole != null) {
       final employee = Employee(
-        id: widget.employee?.id ?? 0,
+        id: widget.employee?.id ?? null,
         name: _nameController.text,
         role: selectedRole!,
         fromDate: fromDate,
